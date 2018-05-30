@@ -23,7 +23,7 @@ The application is provides a simple signup service to an event. User enters his
 ##### Steps to reproduce problem:
 
 1. Start the server
-2. Go to ``http://localhost:8080``
+2. Use Firefox browser version 60 to go to ``http://localhost:8080``
 2. Enter ``<script>alert('Boo!')</script>`` as your name
 3. Press **Submit** 
 4. a) A popup window is shown.
@@ -35,7 +35,8 @@ Potentially malicious code can be executed on a victim's browser, leading to pot
 
 ##### Fix:
 
-A simple way to fix the problem is to substitute ``th:utext`` with ``th:text`` in both ``done.html`` and ``admin.html``. The input could also be sanitized; after all, it is quite unlikely that someone's name and/or address will contain html tags. Note that, for example, newer versions of the Chrome browser catches this attempt and fails to show the page with the potentially malicious script. While testing, the problem was reproducible with Firefox browser version 60.
+A simple way to fix the problem is to substitute all instances of ``th:utext`` with ``th:text`` in both ``done.html`` and ``admin.html``. The input could also be sanitized; after all, it is quite unlikely that someone's name and/or address will contain HTML tags. 
+Note that, for example, newer versions of the Chrome browser catches this attempt and fails to show the page with the potentially malicious script.
 
 ### A6: Sensitive data exposure and A7: Missing function level access control
 
@@ -54,9 +55,9 @@ No function level access control is provided, so user without proper credentials
 
 ##### Fix:
 
-Add authentication and different user right levels to the application. An immediate fix is to disable access to the admin page altogether.
+An immediate fix is to disable access to the admin page altogether. Proper authentication and different user right levels should be added to the application, thus restricting the access to sensitive data.
 
-### A8: Cross-Site Request Forgery (CSRF)
+### A8: Cross-Site Request Forgery (CSRF) and A5: Security misconfiguration
 
 ##### Steps to reproduce problem:
 
@@ -76,7 +77,8 @@ The application is configured poorly and cross-site request forgery is disabled 
 
 ##### Fix:
 
-Enable CSRF in ``SecurityConfiguration.java`` by commenting out or removing the line ``http.csrf().disable();`` Note, that for example newer Chrome browsers catch this exploit and stop the user from submitting the form.
+Enable CSRF in ``SecurityConfiguration.java`` by commenting out or removing the line ``http.csrf().disable();`` Other security configurations are also non-existant, so implementing those should be first priority. 
+Note, that for example newer Chrome browsers catch this exploit and stop the user from submitting the form.
 
 ### A4: Insecure direct object references and A10: Unvalidated redirects and forwards
 
@@ -101,4 +103,6 @@ Also, the redirection path after the user deletion can be specified directly in 
 ##### Fix:
 
 An immediate fix is to disable user deletion in the application. The *very* insecure way of handling deletions by ``GET`` method should at least be changed to a form ``POST`` or ``DELETE`` and, relating to **A7** flaw stated above, some kind of authentication and user rights should be implemented.  
+
+
 
