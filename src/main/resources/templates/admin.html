@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+    <head>
+        <title>Admin page</title>
+    </head>
+    <body>
+        <h1>Administration</h1>
+        
+        <table>
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Address</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:if="${signups.empty}">
+                    <td>There are no signups.</td>
+                </tr>
+                <tr th:each="signup: ${signups}">
+                    <td th:utext="${signup.name}">name</td>
+                    <td th:utext="${signup.address}">address</td>
+                    <td><a th:href="@{/admin/delete/{id}?redirect={redirect}(id=${signup.id}, redirect=${redirect})}">Delete</a></td>
+                </tr>
+            </tbody>
+        </table>
+    </body>
+</html>

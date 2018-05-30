@@ -1,6 +1,8 @@
 package sec.project.domain;
 
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.OneToMany;
 import org.springframework.data.jpa.domain.AbstractPersistable;
 
 @Entity
@@ -8,7 +10,7 @@ public class Signup extends AbstractPersistable<Long> {
 
     private String name;
     private String address;
-
+    
     public Signup() {
         super();
     }
