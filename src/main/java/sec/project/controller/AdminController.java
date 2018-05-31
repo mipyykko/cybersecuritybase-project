@@ -31,8 +31,8 @@ public class AdminController {
     }
     
     @RequestMapping("/admin/delete/{id}")
-    public String deleteSignup(Model model, @PathVariable Long id) {
+    public String deleteSignup(Model model, @PathVariable Long id, @RequestParam(value="redirect", defaultValue="/admin") String redirect) {
         signupRepository.delete(id);
-        return "redirect:/admin";
+        return "redirect:" + redirect;
     }
 }
