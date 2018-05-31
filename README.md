@@ -1,6 +1,6 @@
 ### cybersecuritybase-project
 
-This is a course project for the Cyber Security Base course. The assignment was to implement an web application containing at least 5 of the [OWASP top 10](https://www.owasp.org/index.php/Top_10_2013-Top_10) web security design flaws.
+This is a course project for the Cyber Security Base course. The assignment was to implement an web application containing at least 5 of the [OWASP top 10](https://www.owasp.org/index.php/Top_10_2013-Top_10) web security design flaws. 
 
 ## The intended functionality
 
@@ -18,6 +18,8 @@ The application is provides a simple signup service to an event. User enters his
 
 ## Security flaws
 
+The application is rather insecure and has several security flaws. I've chosen to document the following ones, but it probably contains a lot more. 
+
 ### A3: Cross-Site Scripting (XSS)
 
 ##### Steps to reproduce problem:
@@ -31,12 +33,12 @@ The application is provides a simple signup service to an event. User enters his
 
 ##### Issues: 
 
-Potentially malicious code can be executed on a victim's browser, leading to potential security issues. 
+Potentially malicious code can be executed on a victim's browser, leading to potential security issues. In this case, the issue is more of a nuisance -- a script opening a simple alert window -- but potentially much more serious attacks could be launched. 
 
 ##### Fix:
 
-A simple way to fix the problem is to substitute all instances of ``th:utext`` with ``th:text`` in both ``done.html`` and ``admin.html``. The input could also be sanitized; after all, it is quite unlikely that someone's name and/or address will contain HTML tags. 
-Note that, for example, newer versions of the Chrome browser catches this attempt and fails to show the page with the potentially malicious script.
+A simple way to fix the problem is to substitute all instances of ``th:utext`` with ``th:text`` in both ``done.html`` and ``admin.html``. The input should also be sanitized; after all, it is quite unlikely that someone's name and/or address will contain HTML tags. 
+Note that, for example, newer versions of the Chrome browser will catch this attempt and fails to show the page with the potentially malicious script.
 
 ### A6: Sensitive data exposure and A7: Missing function level access control
 
@@ -51,11 +53,11 @@ Note that, for example, newer versions of the Chrome browser catches this attemp
 
 ##### Issues:
 
-No function level access control is provided, so user without proper credentials can access potentially sensitive information; in this case names and addresses of the registrants.
+No function level access control is provided, so user without proper credentials can access potentially sensitive information; in this case names and addresses of the registrants. Also, the administrator view is available in a rather easily guessable location.
 
 ##### Fix:
 
-An immediate fix is to disable access to the admin page altogether. Proper authentication and different user right levels should be added to the application, thus restricting the access to sensitive data.
+An immediate fix is to disable access to the admin page altogether. Proper authentication and different user right levels should be added to the application, thus restricting the access to sensitive data. Currently the application does not have any kind of authentication. The URL to the administrator view could also be changed. 
 
 ### A8: Cross-Site Request Forgery (CSRF) and A5: Security misconfiguration
 
@@ -73,12 +75,12 @@ An immediate fix is to disable access to the admin page altogether. Proper authe
 
 ##### Issues:
 
-The application is configured poorly and cross-site request forgery is disabled in the security configuration. Malicious requests could be forged, for example by creating a web page that submits a form data to this server.
+The application is configured poorly and cross-site request forgery is disabled in the security configuration. Malicious requests could be forged, for example by creating another web page that submits a form data to this server.
 
 ##### Fix:
 
 Enable CSRF in ``SecurityConfiguration.java`` by commenting out or removing the line ``http.csrf().disable();`` Other security configurations are also non-existant, so implementing those should be first priority. 
-Note, that for example newer Chrome browsers catch this exploit and stop the user from submitting the form.
+Note that for example newer Chrome browsers will catch this exploit and stop the user from submitting the form.
 
 ### A4: Insecure direct object references and A10: Unvalidated redirects and forwards
 
@@ -98,11 +100,11 @@ or alternatively
 ##### Issues:
 
 An attacker can manipulate user data by changing the web site address. In this case signup deletion is handled rather unwisely with a ``GET`` method, and the path to do this is easily guessed. 
-Also, the redirection path after the user deletion can be specified directly in the site address, and users could be led to potentially malicious sites. 
+Also, the redirection path after the user deletion can be specified directly as a query parameter, thus allowing users to be led to potentially malicious sites. 
 
 ##### Fix:
 
-An immediate fix is to disable user deletion in the application. The *very* insecure way of handling deletions by ``GET`` method should at least be changed to a form ``POST`` or ``DELETE`` and, relating to **A7** flaw stated above, some kind of authentication and user rights should be implemented.  
-
+An immediate fix is to disable user deletion in the application. The *very* insecure way of handling deletions by ``GET`` method should at least be changed to a form ``POST`` or ``DELETE`` and, relating to **A7** flaw stated above, some kind of authentication and user rights should be implemented.
+Redirection with a visible path in the URL is a very unwise choice. In this case it is also completely unnecessary, and should be avoided altogether -- it's highly unlikely that the administrator user would ever be needed to be redirected to other pages than the admin page after the deletion.
 
 
